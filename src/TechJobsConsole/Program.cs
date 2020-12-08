@@ -16,6 +16,7 @@ namespace TechJobsConsole
 
             // Column options
             Dictionary<string, string> columnChoices = new Dictionary<string, string>();
+            columnChoices.Add("name", "Name");
             columnChoices.Add("core competency", "Skill");
             columnChoices.Add("employer", "Employer");
             columnChoices.Add("location", "Location");
@@ -57,13 +58,23 @@ namespace TechJobsConsole
                     // What is their search term?
                     Console.WriteLine("\nSearch term: ");
                     string searchTerm = Console.ReadLine();
+                    do
+                    {
+                        if (searchTerm == "")
+                        {
+                            Console.WriteLine("Please enter a search term.");
+                            searchTerm = Console.ReadLine();
+                        }
+                    } while (searchTerm == "");
 
                     List<Dictionary<string, string>> searchResults;
+
 
                     // Fetch results
                     if (columnChoice.Equals("all"))
                     {
-                        Console.WriteLine("Search all fields not yet implemented.");
+                        searchResults = JobData.FindByValue(searchTerm);
+                        PrintJobs(searchResults);
                     }
                     else
                     {
@@ -100,7 +111,17 @@ namespace TechJobsConsole
                 }
 
                 string input = Console.ReadLine();
+                do
+                {
+                    if (input == "")
+                    {
+                        Console.WriteLine($"Please enter a number between 0 and {choices.Count - 1}");
+                        input = Console.ReadLine();
+                    }
+                } while (input == "");
+
                 choiceIdx = int.Parse(input);
+                
 
                 if (choiceIdx < 0 || choiceIdx >= choiceKeys.Length)
                 {
@@ -118,7 +139,25 @@ namespace TechJobsConsole
 
         private static void PrintJobs(List<Dictionary<string, string>> someJobs)
         {
-            Console.WriteLine("PrintJobs is not implemented yet");
+            if (someJobs.Count == 0)
+            {
+                Console.WriteLine("No results containing that search term exist. Please try again.");
+            }
+            else
+            {
+                foreach (Dictionary<string, string> job in someJobs)
+                {
+                    Console.WriteLine("*****");
+                    foreach (string key in job.Keys)
+                    {
+                        if (job.ContainsKey(key))
+                        {
+                            Console.WriteLine($"{key}: {job[key]}");
+                        }
+                    }
+                    Console.WriteLine("*****");
+                }
+            }
         }
     }
 }
